@@ -1,7 +1,7 @@
 # Meta Creative Fatigue Alert System
 
 ## Problem
-In performance marketing, creative fatigue is often detected too late.
+In paid marketing, creative fatigue is often detected too late.
 By the time CTR drops and CPM increases significantly, a lot of budget is already wasted.
 
 ## Objective
