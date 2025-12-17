@@ -6,7 +6,9 @@ CPM_RISE_THRESHOLD = 0.25
 MIN_FREQUENCY = 2.5
 MIN_SPEND = 3000
 
-print("\nChecking creative fatigue...\n")
+print("\n🚨 Running Creative Fatigue Check 🚨\n")
+
+fatigued_ads = []
 
 for ad in ads_data:
     ctr_drop = (ad["ctr_prev"] - ad["ctr_recent"]) / ad["ctr_prev"]
@@ -19,8 +21,19 @@ for ad in ads_data:
         and ad["spend_recent"] >= MIN_SPEND
     )
 
-    status = "FATIGUED 🚨" if is_fatigued else "OK ✅"
+    if is_fatigued:
+        fatigued_ads.append(ad)
 
-    print(f"Ad: {ad['ad_name']}")
-    print(f"Status: {status}")
-    print("-" * 40)
+# High alert section
+if fatigued_ads:
+    print("🚨 HIGH ALERT: CREATIVE FATIGUE DETECTED 🚨\n")
+
+    for ad in fatigued_ads:
+        print(f"Ad Name: {ad['ad_name']}")
+        print("Recommended Action:")
+        print("- Refresh creative immediately")
+        print("- Test new hook or format")
+        print("- Reduce frequency or pause ad")
+        print("-" * 50)
+else:
+    print("✅ All creatives are healthy. No action needed.")
