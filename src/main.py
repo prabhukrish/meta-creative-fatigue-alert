@@ -33,3 +33,18 @@ for ad in ads_data:
 
     if is_fatigued:
         send_alert(ad)
+print("🔍 Starting fatigue evaluation")
+
+for ad in ads_data:
+    print(f"Checking ad: {ad['ad_name']}")
+    
+    ctr_drop = (ad["ctr_prev"] - ad["ctr_recent"]) / ad["ctr_prev"]
+    cpm_rise = (ad["cpm_recent"] - ad["cpm_prev"]) / ad["cpm_prev"]
+
+    print(f"CTR drop: {ctr_drop:.2f}, CPM rise: {cpm_rise:.2f}")
+
+    if is_fatigued:
+        print("🚨 Fatigued ad detected")
+        send_email_alert(ad)
+    else:
+        print("✅ Ad is healthy")
