@@ -3,12 +3,13 @@
 ads_data = [
     {
         "ad_name": "IELTS Video Ad - Canada",
-        "ctr_prev": 1.8,
-        "ctr_recent": 1.1,
-        "cpm_prev": 180,
-        "cpm_recent": 245,
-        "frequency": 2.9,
-        "spend_recent": 4200
+        "ctr_prev": 2.5,
+        "ctr_recent": 0.5,
+        "cpm_prev": 100,
+        "cpm_recent": 200,
+        "frequency": 4.0,
+        "spend_recent": 6000
+
     },
     {
         "ad_name": "Study Abroad Carousel - UK",
