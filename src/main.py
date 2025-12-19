@@ -1,4 +1,5 @@
 from mock_ads_data import ads_data
+from email_alert import send_email_alert
 
 # Fatigue thresholds
 CTR_DROP_THRESHOLD = 0.30
@@ -48,3 +49,16 @@ for ad in ads_data:
         send_email_alert(ad)
     else:
         print("✅ Ad is healthy")
+
+
+from email_alert import send_email_alert
+
+print("🧪 FORCED EMAIL TEST STARTED")
+
+test_ad = {
+    "ad_name": "FORCED TEST AD – GITHUB ACTIONS"
+}
+
+send_email_alert(test_ad)
+
+print("🧪 FORCED EMAIL TEST COMPLETED")
