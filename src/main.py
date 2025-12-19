@@ -1,5 +1,5 @@
-from src.email_alert import send_email_alert
-from src.mock_ads_data import ads_data
+from email_alert import send_email_alert
+from mock_ads_data import ads_data
 
 # Fatigue thresholds
 CTR_DROP_THRESHOLD = 0.30
@@ -62,3 +62,7 @@ test_ad = {
 send_email_alert(test_ad)
 
 print("🧪 FORCED EMAIL TEST COMPLETED")
+
+print("FORCE TEST")
+send_email_alert({"ad_name": "LOCAL TERMINAL TEST"})
+
