@@ -1,5 +1,5 @@
-from mock_ads_data import ads_data
-from email_alert import send_email_alert
+from src.mock_ads_data import ads_data
+from src.email_alert import send_email_alert
 
 # Fatigue thresholds
 CTR_DROP_THRESHOLD = 0.30
