@@ -5,9 +5,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
-ALERT_EMAIL_TO = os.getenv("ALERT_EMAIL_TO")
-ALERT_EMAIL_FROM = os.getenv("ALERT_EMAIL_FROM")
+SENDER_EMAIL = os.getenv("ALERT_EMAIL_TO")
+RECEIVER_EMAIL = os.getenv("ALERT_EMAIL_FROM")
 
+if not BREVO_API_KEY or not SENDER_EMAIL or not RECEIVER_EMAIL:
+    raise RuntimeError("Email environment variables are not set")
 
 def send_email_alert(ad):
     url = "https://api.brevo.com/v3/smtp/email"
@@ -41,3 +43,26 @@ def send_email_alert(ad):
     else:
         print("❌ Email alert failed")
         print(response.status_code, response.text)
+
+def send_daily_audit_email(html_content):
+    subject = "Daily Meta Ads Audit"
+
+    payload = {
+        "sender": {"email": SENDER_EMAIL},
+        "to": [{"email": RECEIVER_EMAIL}],
+        "subject": subject,
+        "htmlContent": html_content,
+    }
+
+    response = requests.post(
+        "https://api.brevo.com/v3/smtp/email",
+        json=payload,
+        headers={
+            "api-key": BREVO_API_KEY,
+            "Content-Type": "application/json",
+        },
+    )
+    print("📧 Brevo status:", response.status_code)
+    print("📧 Brevo response:", response.text)
+    
+    response.raise_for_status()

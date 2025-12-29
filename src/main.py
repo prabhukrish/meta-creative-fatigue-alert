@@ -1,6 +1,10 @@
 from email_alert import send_email_alert
 from alert_state import should_alert, record_alert
 from meta_ads import fetch_ads_data
+from campaign_audit import get_campaign_audit_data
+from audit_report import generate_audit_email
+from email_alert import send_daily_audit_email
+
 ads_data = fetch_ads_data()
 
 # Fatigue thresholds
@@ -56,3 +60,12 @@ for ad in ads_data:
 
     else:
         print("✅ Ad is healthy")
+
+print("\n📊 Generating daily campaign audit...\n")
+
+campaigns = get_campaign_audit_data()
+audit_html = generate_audit_email(campaigns)
+
+send_daily_audit_email(audit_html)
+
+print("✅ Daily audit email sent")
