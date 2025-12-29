@@ -1,30 +1,151 @@
-# Meta Creative Fatigue Alert System
+# Meta Ads Daily Audit & Creative Fatigue Alert System
 
-## Problem
-In paid marketing, creative fatigue is often detected too late.
-By the time CTR drops and CPM increases significantly, a lot of budget is already wasted.
+A production-ready automation system that audits Meta Ads campaigns daily, detects early performance risks, and sends actionable alerts when creatives show fatigue.
 
-## Objective
-To proactively detect creative fatigue in Meta ads and alert the marketing team
-before performance drops severely.
+Built for marketers who want **signal, not noise**.
 
-## What this tool does
-- Monitors Meta ad creatives on a daily basis
-- Compares recent performance vs past performance
-- Flags creatives showing fatigue signals
-- Sends high-priority alerts via Email and WhatsApp
+---
 
-## Fatigue Signals (Initial Version)
-A creative is marked as fatigued if:
-- CTR drops by 30% or more
-- CPM increases by 25% or more
-- Frequency is above 2.5
-- Minimum spend threshold is met
+## 🚀 What this system does
 
-## Why this matters
-- Prevents delayed creative refresh
-- Reduces wasted ad spend
-- Enables proactive performance optimisation
+### Daily (Automated)
+- Audits all Meta ad campaigns
+- Compares **last 7 days vs previous 7 days**
+- Evaluates CTR, CPM, Frequency, and Spend
+- Sends a **daily HTML audit email** with:
+  - Campaign overview
+  - Performance health
+  - Red flags
+  - Opportunities
+  - Suggested actions
 
-## Status
-🚧 Work in progress — building step by step
+### Real-time (Conditional)
+- Detects **creative fatigue at ad level**
+- Triggers **critical alerts only** (with cooldown)
+- Prevents repeated alerts for the same ad within 48 hours
+
+---
+
+## 🧠 Key Design Principles
+
+- **Audit ≠ Alert**
+  - Audit is informational (daily)
+  - Alerts are actionable (only when critical)
+
+- **Rolling comparison**
+  - Uses last 7 days vs previous 7 days
+  - Avoids single-day noise
+
+- **Noise control**
+  - Cooldown logic prevents alert spam
+  - Skips ads/campaigns without baseline data
+
+---
+
+## 📊 Fatigue & Health Logic
+
+### ⚠️ Warning (shown in daily audit)
+Triggered if **any one** is true:
+- CTR drop ≥ 15%
+- CPM rise ≥ 15%
+- Frequency ≥ 2.2
+
+### 🚨 Critical (instant alert)
+Triggered if **all** are true:
+- CTR drop ≥ 25%
+- CPM rise ≥ 25%
+- Frequency ≥ 2.8
+- Spend ≥ ₹2,000 (last 7 days)
+
+### Campaign Escalation
+- If 2+ ads in the same campaign are warning/critical
+- Or 1 critical ad + high campaign frequency
+
+---
+
+## 🗂 Project Structure
+
+src/
+├── main.py # Orchestrator
+├── meta_ads.py # Ad-level Meta API data
+├── campaign_audit.py # Campaign-level audit logic
+├── audit_report.py # HTML audit email generator
+├── email_alert.py # Email sending (Brevo)
+├── alert_state.py # Alert cooldown & deduplication
+
+
+---
+
+## ⚙️ Environment Variables
+
+Required secrets:
+
+META_ACCESS_TOKEN
+META_AD_ACCOUNT_ID
+BREVO_API_KEY
+ALERT_EMAIL_FROM
+ALERT_EMAIL_TO
+
+
+
+Configured via:
+- Local shell (for testing)
+- GitHub Actions (for automation)
+
+---
+
+## 🤖 Automation
+
+- Runs daily via **GitHub Actions**
+- No manual intervention required
+- Safe failure if credentials are missing
+
+---
+
+## 💡 Why this system is different
+
+- Not a dashboard — **email-first**
+- Not reactive — **trend-based**
+- Not noisy — **cooldowns & escalation logic**
+- Built like a real **Marketing Ops system**
+
+---
+
+## 📌 Future Enhancements (Optional)
+
+- WhatsApp alerts for critical fatigue
+- Google Sheets / CSV audit logs
+- Budget pacing alerts
+- Campaign scaling recommendations
+
+
+
+🏗️ ARCHITECTURE DIAGRAM (SIMPLE & INTERVIEW-FRIENDLY)
+
+
+                GitHub Actions (Daily Scheduler)
+                            |
+                            v
+                  ┌─────────────────────┐
+                  │      main.py         │
+                  │  (Orchestrator)      │
+                  └─────────────────────┘
+                       |          |
+        ┌──────────────┘          └──────────────┐
+        v                                        v
+┌───────────────┐                    ┌──────────────────┐
+│ meta_ads.py   │                    │ campaign_audit.py │
+│ (Ad-level)    │                    │ (Campaign-level)  │
+└───────────────┘                    └──────────────────┘
+        |                                        |
+        v                                        v
+┌───────────────┐                    ┌──────────────────┐
+│ alert_state.py│                    │ audit_report.py   │
+│ (Cooldowns)   │                    │ (HTML Builder)    │
+└───────────────┘                    └──────────────────┘
+        |                                        |
+        v                                        v
+┌────────────────────────────────────────────────────────┐
+│                  email_alert.py                         │
+│        (Brevo – alerts + daily audit email)             │
+└────────────────────────────────────────────────────────┘
