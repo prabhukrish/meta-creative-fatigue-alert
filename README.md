@@ -1,150 +1,123 @@
-# Meta Ads Daily Audit & Creative Fatigue Alert System
+📊 Automated Meta Ads Audit & Creative Fatigue Detection (Side Project)
+Overview
 
-A production-ready automation system that audits Meta Ads campaigns daily, detects early performance risks, and sends actionable alerts when creatives show fatigue.
+This project is an automated Meta Ads monitoring system that delivers a daily, decision-ready campaign audit via email.
 
-Built for marketers who want **signal, not noise**.
+It combines yesterday’s business performance with trend-based health diagnostics to help performance marketers act early—before creative fatigue or inefficiencies impact spend.
 
----
+The system runs fully automatically using the Meta Marketing API and GitHub Actions.
 
-## 🚀 What this system does
+What Problem This Solves
 
-### Daily (Automated)
-- Audits all Meta ad campaigns
-- Compares **last 7 days vs previous 7 days**
-- Evaluates CTR, CPM, Frequency, and Spend
-- Sends a **daily HTML audit email** with:
-  - Campaign overview
-  - Performance health
-  - Red flags
-  - Opportunities
-  - Suggested actions
+Manually checking Meta Ads performance is:
 
-### Real-time (Conditional)
-- Detects **creative fatigue at ad level**
-- Triggers **critical alerts only** (with cooldown)
-- Prevents repeated alerts for the same ad within 48 hours
+Reactive
 
----
+Time-consuming
 
-## 🧠 Key Design Principles
+Easy to misread without context (budget, trends, fatigue)
 
-- **Audit ≠ Alert**
-  - Audit is informational (daily)
-  - Alerts are actionable (only when critical)
+This system answers two critical daily questions in one email:
 
-- **Rolling comparison**
-  - Uses last 7 days vs previous 7 days
-  - Avoids single-day noise
+What did each campaign deliver yesterday?
 
-- **Noise control**
-  - Cooldown logic prevents alert spam
-  - Skips ads/campaigns without baseline data
+Is the campaign healthy or drifting toward fatigue?
 
----
+Key Features
+📧 Daily Campaign Audit Email
 
-## 📊 Fatigue & Health Logic
+Delivered automatically every day with two clear sections:
 
-### ⚠️ Warning (shown in daily audit)
-Triggered if **any one** is true:
-- CTR drop ≥ 15%
-- CPM rise ≥ 15%
-- Frequency ≥ 2.2
+1️⃣ Yesterday Performance (Business View)
 
-### 🚨 Critical (instant alert)
-Triggered if **all** are true:
-- CTR drop ≥ 25%
-- CPM rise ≥ 25%
-- Frequency ≥ 2.8
-- Spend ≥ ₹2,000 (last 7 days)
+One table showing, per campaign:
 
-### Campaign Escalation
-- If 2+ ads in the same campaign are warning/critical
-- Or 1 critical ad + high campaign frequency
+Daily Budget
 
----
+Spend (Yesterday)
 
-## 🗂 Project Structure
+Impressions
 
-src/
-├── main.py # Orchestrator
-├── meta_ads.py # Ad-level Meta API data
-├── campaign_audit.py # Campaign-level audit logic
-├── audit_report.py # HTML audit email generator
-├── email_alert.py # Email sending (Brevo)
-├── alert_state.py # Alert cooldown & deduplication
+Results (dynamic label: Leads / Purchases / etc.)
 
+Cost per Result
 
----
+CTR
 
-## ⚙️ Environment Variables
+CPM
 
-Required secrets:
+2️⃣ Campaign Health & Fatigue (Diagnostic View)
 
-META_ACCESS_TOKEN
-META_AD_ACCOUNT_ID
-BREVO_API_KEY
-ALERT_EMAIL_FROM
-ALERT_EMAIL_TO
+One table showing, per campaign:
 
+CTR % change (last 7 days vs previous 7 days)
 
+CPM % change (last 7 days vs previous 7 days)
 
-Configured via:
-- Local shell (for testing)
-- GitHub Actions (for automation)
+Frequency
 
----
+Status: HEALTHY / WARNING / CRITICAL
 
-## 🤖 Automation
+🚨 Creative Fatigue Alerts
 
-- Runs daily via **GitHub Actions**
-- No manual intervention required
-- Safe failure if credentials are missing
+Separate critical alert emails for CRITICAL campaigns
 
----
+Triggered only when multiple degradation signals align
 
-## 💡 Why this system is different
+Cooldown logic prevents alert spam
 
-- Not a dashboard — **email-first**
-- Not reactive — **trend-based**
-- Not noisy — **cooldowns & escalation logic**
-- Built like a real **Marketing Ops system**
+🤖 Full Automation
 
----
+Scheduled via GitHub Actions
 
-## 📌 Future Enhancements (Optional)
+Secure credentials using repository secrets
 
-- WhatsApp alerts for critical fatigue
-- Google Sheets / CSV audit logs
-- Budget pacing alerts
-- Campaign scaling recommendations
+No manual intervention required
 
-🏗️ ARCHITECTURE DIAGRAM (SIMPLE & INTERVIEW-FRIENDLY)
+Tech Stack
 
+Python
 
+Meta Marketing API
 
-                GitHub Actions (Daily Scheduler)
-                            |
-                            v
-                  ┌─────────────────────┐
-                  │      main.py         │
-                  │  (Orchestrator)      │
-                  └─────────────────────┘
-                       |          |
-        ┌──────────────┘          └──────────────┐
-        v                                        v
-┌───────────────┐                    ┌──────────────────┐
-│ meta_ads.py   │                    │ campaign_audit.py │
-│ (Ad-level)    │                    │ (Campaign-level)  │
-└───────────────┘                    └──────────────────┘
-        |                                        |
-        v                                        v
-┌───────────────┐                    ┌──────────────────┐
-│ alert_state.py│                    │ audit_report.py   │
-│ (Cooldowns)   │                    │ (HTML Builder)    │
-└───────────────┘                    └──────────────────┘
-        |                                        |
-        v                                        v
-┌────────────────────────────────────────────────────────┐
-│                  email_alert.py                         │
-│        (Brevo – alerts + daily audit email)             │
-└────────────────────────────────────────────────────────┘
+GitHub Actions (cron automation)
+
+Brevo (email delivery)
+
+Streamlit (optional dashboard for visibility)
+
+Design Philosophy
+
+Trend-based analysis over single-day noise
+
+Business metrics first, diagnostics second
+
+High-signal, low-noise alerts
+
+Built for how marketers actually make decisions
+
+Why This Project Matters
+
+This is not a reporting script or dashboard clone.
+
+It’s a monitoring system that:
+
+Reduces manual checks
+
+Surfaces risk early
+
+Improves decision speed
+
+Bridges performance data and action
+
+Status
+
+✅ Production-ready
+✅ Running daily
+✅ Actively used for monitoring Meta Ads performance
+
+### Future Enhancements
+- Budget utilisation alerts
+- Creative-level drilldowns
+- Slack / WhatsApp alerts
+- Historical trend dashboards
