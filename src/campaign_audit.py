@@ -106,3 +106,140 @@ def get_campaign_audit_data():
         audit_data.append(campaign)
 
     return audit_data
+
+def fetch_yesterday_campaign_metrics():
+    """
+    Fetch yesterday's performance metrics per campaign
+    """
+    url = f"https://graph.facebook.com/{GRAPH_API_VERSION}/{AD_ACCOUNT_ID}/insights"
+
+    params = {
+        "fields": (
+            "campaign_id,"
+            "campaign_name,"
+            "spend,"
+            "impressions,"
+            "ctr,"
+            "cpm,"
+            "actions,"
+            "cost_per_action_type"
+        ),
+        "level": "campaign",
+        "date_preset": "yesterday",
+        "limit": 100,
+        "access_token": META_ACCESS_TOKEN,
+    }
+
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+
+    return response.json().get("data", [])
+
+def extract_primary_result(campaign):
+    """
+    Extract result label + value dynamically
+    """
+    actions = campaign.get("actions", [])
+    cost_actions = campaign.get("cost_per_action_type", [])
+
+    if not actions:
+        return {
+            "result_label": "Results",
+            "result_value": 0,
+            "cost_per_result": None,
+        }
+
+    primary_action = actions[0]
+    action_type = primary_action.get("action_type", "Results")
+    value = float(primary_action.get("value", 0))
+
+    cost_lookup = {
+        c["action_type"]: float(c["value"])
+        for c in cost_actions
+    }
+
+    return {
+        "result_label": action_type.replace("_", " ").title(),
+        "result_value": value,
+        "cost_per_result": cost_lookup.get(action_type),
+    }
+
+def extract_primary_result(campaign):
+    """
+    Extract result label + value dynamically
+    """
+    actions = campaign.get("actions", [])
+    cost_actions = campaign.get("cost_per_action_type", [])
+
+    if not actions:
+        return {
+            "result_label": "Results",
+            "result_value": 0,
+            "cost_per_result": None,
+        }
+
+    primary_action = actions[0]
+    action_type = primary_action.get("action_type", "Results")
+    value = float(primary_action.get("value", 0))
+
+    cost_lookup = {
+        c["action_type"]: float(c["value"])
+        for c in cost_actions
+    }
+
+    return {
+        "result_label": action_type.replace("_", " ").title(),
+        "result_value": value,
+        "cost_per_result": cost_lookup.get(action_type),
+    }
+
+def get_yesterday_campaign_data():
+    raw = fetch_yesterday_campaign_metrics()
+    budgets = fetch_campaign_budgets()
+
+    output = {}
+
+    for c in raw:
+        result_data = extract_primary_result(c)
+
+        output[c["campaign_id"]] = {
+            "campaign_name": c["campaign_name"],
+            "y_budget": budgets.get(c["campaign_id"]),
+            "y_spend": float(c.get("spend", 0)),
+            "y_impressions": int(c.get("impressions", 0)),
+            "y_ctr": float(c.get("ctr", 0)),
+            "y_cpm": float(c.get("cpm", 0)),
+            "y_results": result_data["result_value"],
+            "y_result_label": result_data["result_label"],
+            "y_cost_per_result": result_data["cost_per_result"],
+        }
+
+    return output
+
+
+
+
+def fetch_campaign_budgets():
+    """
+    Fetch daily budgets for campaigns
+    """
+    url = f"https://graph.facebook.com/{GRAPH_API_VERSION}/{AD_ACCOUNT_ID}/campaigns"
+
+    params = {
+        "fields": "id,name,daily_budget",
+        "limit": 100,
+        "access_token": META_ACCESS_TOKEN,
+    }
+
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+
+    budgets = {}
+    for c in response.json().get("data", []):
+        budgets[c["id"]] = (
+            float(c["daily_budget"]) / 100
+            if c.get("daily_budget")
+            else None
+        )
+
+    return budgets

@@ -8,7 +8,7 @@ Main Orchestrator
 
 # ===== Imports =====
 from meta_ads import fetch_ads_data
-from campaign_audit import get_campaign_audit_data
+from campaign_audit import get_campaign_audit_data, get_yesterday_campaign_data  
 from audit_report import generate_audit_email
 from email_alert import send_email_alert, send_daily_audit_email
 from alert_state import should_alert, record_alert
@@ -59,7 +59,12 @@ def run_daily_campaign_audit():
     print("\n📊 Generating daily campaign audit...\n")
 
     campaigns = get_campaign_audit_data()
-    audit_html = generate_audit_email(campaigns)
+    yesterday_data = get_yesterday_campaign_data()
+
+    audit_html = generate_audit_email(
+        campaigns=campaigns,
+        yesterday_data=yesterday_data
+    )
 
     send_daily_audit_email(audit_html)
 

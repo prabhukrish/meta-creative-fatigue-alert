@@ -1,6 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
+from datetime import date
 
 load_dotenv()
 
@@ -45,12 +46,14 @@ def send_email_alert(ad):
         print(response.status_code, response.text)
 
 def send_daily_audit_email(html_content):
-    subject = "Daily Meta Ads Audit"
+    from datetime import date
+    subject_date = date.today().strftime("%d %b %Y")
 
+    
     payload = {
         "sender": {"email": SENDER_EMAIL},
         "to": [{"email": RECEIVER_EMAIL}],
-        "subject": subject,
+        "subject": f"📊 Meta Ads Daily Audit – {subject_date}",
         "htmlContent": html_content,
     }
 

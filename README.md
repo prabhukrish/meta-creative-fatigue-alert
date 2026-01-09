@@ -118,9 +118,8 @@ Configured via:
 - Budget pacing alerts
 - Campaign scaling recommendations
 
-
-
 🏗️ ARCHITECTURE DIAGRAM (SIMPLE & INTERVIEW-FRIENDLY)
+
 
 
                 GitHub Actions (Daily Scheduler)
